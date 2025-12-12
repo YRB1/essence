@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Essence — Perfume Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+  /* Variables */
+  :root{
+    --bg:#0b0b0b; --gold:#c9a24a; --white:#f7f7f7; --muted:#bdbdbd;
+    --maxw:1100px;
+  }
+
+  *{box-sizing:border-box}
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; margin:0; background:var(--bg); color:var(--white);}
+  a{color:inherit; text-decoration:none}
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar{width:10px}
+  ::-webkit-scrollbar-track{background:#0b0b0b}
+  ::-webkit-scrollbar-thumb{background:var(--gold); border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:#d4b05e}
+
+  .container{max-width:var(--maxw); margin:0 auto; padding:28px}
+
+  /* Deals Banner */
+  .deals-banner{
+    background:linear-gradient(90deg, var(--gold), #d4b05e);
+    color:#0b0b0b;
+    text-align:center;
+    padding:12px;
+    font-weight:700;
+    font-size:14px;
+    position:sticky;
+    top:0;
+    z-index:200;
+    animation:slideDown 0.5s ease;
+  }
+  @keyframes slideDown{
+    from{transform:translateY(-100%)}
+    to{transform:translateY(0)}
+  }
+
+  /* Header */
+  header{display:flex; align-items:center; justify-content:space-between; padding:18px 0; position:relative;}
+  .brand{font-family:'Playfair Display',serif; letter-spacing:1px; font-size:26px; color:var(--gold);}
+  nav{display:flex; gap:32px; align-items:center;}
+  nav a{color:var(--white); opacity:0.9; position:relative; transition:color 0.5s; font-size:15px;}
+  nav a:hover{color:var(--gold)}
+  .menu-toggle{display:none; background:transparent; border:none; color:var(--white); font-size:24px; cursor:pointer; padding:8px;}
+
+  /* Dropdown - Fixed */
+  .dropdown{position:relative;}
+  .dropbtn{cursor:pointer; display:flex; align-items:center; gap:4px; color:var(--white); opacity:0.9; transition:color 0.5s; font-size:15px;}
+  .dropbtn:hover{color:var(--gold)}
+  .dropdown-content{
+    display:none;
+    position:absolute;
+    top:100%;
+    left:50%;
+    transform:translateX(-50%);
+    background:#0f0f0f;
+    width:200px;
+    border-radius:6px;
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 4px 12px rgba(0,0,0,0.5);
+    z-index:100;
+    margin-top:12px;
+    padding:8px 0;
+  }
+  .dropdown-content a{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:14px 0;
+    color:var(--white);
+    white-space:nowrap;
+    transition:all 0.5s;
+    text-align:center;
+    width:100%;
+  }
+  .dropdown-content a:hover{background:rgba(201,162,74,0.1); color:var(--gold);}
+  .dropdown:hover .dropdown-content{display:block;}
+  .dropdown::before{
+    content:'';
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    height:12px;
+  }
+
+  /* Hero with Background Slideshow */
+  .hero{
+    position:relative;
+    display:grid; 
+    grid-template-columns:1fr 420px; 
+    gap:40px; 
+    align-items:center; 
+    margin:40px 0;
+    padding:60px 40px;
+    border-radius:16px;
+    overflow:hidden;
+    min-height:600px;
+    background:#1a1a1a;
+  }
+  .hero-bg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+  }
+  .hero-slide{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    opacity:0;
+    transition:opacity 1.5s ease-in-out;
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+  }
+  .hero-slide.active{opacity:1}
+  .hero-slide::after{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:linear-gradient(to right, rgba(11,11,11,0.85), rgba(11,11,11,0.2));
+  }
+  .hero-left, .hero-right{position:relative; z-index:1}
+  .hero-left h1{font-family:'Playfair Display',serif; font-size:46px; margin:0 0 14px; text-shadow:2px 2px 8px rgba(0,0,0,0.7)}
+  .hero-left p{color:var(--muted); margin:0 0 20px;}
+  .hero-left .btn{background:transparent; border:2px solid var(--gold); color:var(--gold); padding:10px 18px; border-radius:6px; font-weight:600; cursor:pointer; transition:all 0.5s ease;}
+  .hero-left .btn:hover{background:var(--gold); color:#0b0b0b; transform:translateY(-2px);}
+  .hero-right{background:linear-gradient(180deg, rgba(201,162,74,0.08), transparent); padding:22px; border-radius:12px; text-align:center;}
+  .perf-img{width:100%; height:320px; object-fit:cover; border-radius:10px;}
+
+  /* Featured products */
+  .section{margin:48px 0;}
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .card{background:#0f0f0f; border:1px solid rgba(255,255,255,0.03); padding:14px; border-radius:10px; transition:transform 0.5s ease, box-shadow 0.5s ease;}
+  .card:hover{transform:scale(1.05); box-shadow:0 8px 24px rgba(201,162,74,0.15);}
+  .card img{width:100%; height:220px; object-fit:cover; border-radius:8px;}
+  .product-title{font-weight:600; margin:10px 0 4px;}
+  .price{color:var(--gold); font-weight:700;}
+  .filters{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  .chip{background:rgba(255,255,255,0.03); padding:8px 12px; border-radius:999px; font-size:14px; cursor:pointer; transition:all 0.5s ease;}
+  .chip:hover{background:rgba(201,162,74,0.1); color:var(--gold);}
+  .chip.active{background:var(--gold); color:#0b0b0b;}
+
+  /* Newsletter Section */
+  .newsletter{
+    background:linear-gradient(135deg, #0f0f0f, #1a1a1a);
+    padding:40px;
+    border-radius:12px;
+    text-align:center;
+    margin:48px 0;
+    border:1px solid rgba(201,162,74,0.2);
+  }
+  .newsletter h3{font-family:'Playfair Display',serif; font-size:32px; margin:0 0 10px; color:var(--gold)}
+  .newsletter p{color:var(--muted); margin:0 0 24px}
+  .newsletter-form{display:flex; gap:10px; max-width:500px; margin:0 auto; flex-wrap:wrap; justify-content:center}
+  .newsletter-form input{flex:1; min-width:250px; padding:12px; border-radius:6px; background:#0b0b0b; border:1px solid rgba(255,255,255,0.1); color:var(--white)}
+  .newsletter-form button{background:var(--gold); color:#0b0b0b; padding:12px 24px; border:none; border-radius:6px; font-weight:700; cursor:pointer; transition:all 0.3s}
+  .newsletter-form button:hover{background:#d4b05e; transform:translateY(-2px)}
+
+  /* Contact page */
+  .contact-grid{display:grid; grid-template-columns:1fr 420px; gap:30px; align-items:start;}
+  form{background:#0f0f0f; padding:18px; border-radius:10px;}
+  input, textarea{width:100%; padding:10px; margin-bottom:10px; border-radius:6px; background:#0b0b0b; border:1px solid rgba(255,255,255,0.04); color:var(--white);}
+
+  footer{border-top:1px solid rgba(255,255,255,0.03); padding:28px 0; margin-top:40px; color:var(--muted); font-size:14px;}
+
+  /* Reviews Carousel with Stars */
+  .carousel{position:relative; overflow:hidden; background:#0f0f0f; border-radius:12px; padding:28px; margin-top:32px;}
+  .carousel-track{display:flex; transition:transform 0.5s ease;}
+  .review{min-width:100%; padding:0 12px;}
+  .review-stars{color:var(--gold); font-size:18px; margin-bottom:8px}
+  .review-text{font-style:italic; color:var(--muted); margin-bottom:12px; font-size:15px;}
+  .review-author{font-weight:700; color:var(--gold);}
+  .carousel-dots{display:flex; gap:8px; justify-content:center; margin-top:18px;}
+  .dot{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.2); cursor:pointer; transition:all 0.3s;}
+  .dot.active{background:var(--gold); width:24px; border-radius:4px;}
+
+  /* Social Icons */
+  .social-icons{display:flex; gap:12px; align-items:center}
+  .social-icon{
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    transition:all 0.5s;
+    font-size:18px;
+  }
+  .social-icon:hover{background:var(--gold); color:#0b0b0b; transform:translateY(-3px)}
+  .social-icon.whatsapp:hover{background:#25D366}
+  .social-icon.instagram:hover{background:linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)}
+  .social-icon.facebook:hover{background:#1877F2}
+  .social-icon svg{width:20px; height:20px; fill:currentColor}
+
+  /* WhatsApp floating */
+  .wa-float{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    background:#25D366;
+    color:#fff;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    z-index:100;
+    box-shadow:0 4px 12px rgba(37,211,102,0.4);
+    cursor:pointer;
+    transition:all 0.5s;
+  }
+  .wa-float:hover{transform:scale(1.1); box-shadow:0 6px 20px rgba(37,211,102,0.6)}
+
+  /* Responsive */
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr; padding:40px 20px}
+    .grid{grid-template-columns:repeat(2,1fr);}
+    .contact-grid{grid-template-columns:1fr;}
+    header{justify-content:space-between}
+    nav{
+      display:none;
+      flex-direction:column;
+      position:absolute;
+      top:100%;
+      left:0;
+      right:0;
+      background:#0f0f0f;
+      padding:20px;
+      border-radius:8px;
+      margin-top:10px;
+      box-shadow:0 4px 12px rgba(0,0,0,0.5);
+      z-index:999;
+      gap:0;
+    }
+    nav.nav-mobile{display:flex}
+    nav a{padding:12px 0; width:100%; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05)}
+    .menu-toggle{display:block;}
+    .dropdown{width:100%}
+    .dropbtn{padding:12px 0; width:100%; justify-content:center; border-bottom:1px solid rgba(255,255,255,0.05)}
+    .dropdown-content{
+      position:static;
+      display:none;
+      margin-top:0;
+      width:100%;
+      border:none;
+      box-shadow:none;
+      background:transparent;
+    }
+    .dropdown-content a{
+      text-align:center !important; 
+      border-bottom:1px solid rgba(255,255,255,0.03); 
+      display:block !important; 
+      padding:12px 0 12px 120px !important;
+      width:100% !important;
+    }
+    .dropdown.active .dropdown-content{display:block}
+  }
+  @media (max-width:640px){
+    .grid{grid-template-columns:1fr;}
+    .hero-left h1{font-size:34px;}
+    .newsletter-form{flex-direction:column}
+    .newsletter-form input{min-width:100%}
+  }
+
+  /* Page switcher */
+  .page{display:none;}
+  .page.active{display:block;}
+  .small{font-size:13px; color:var(--muted);}
+</style>
+
+</head>
+<body>
+  <!-- Deals Banner -->
+  <div class="deals-banner">
+    🎉 Special Offer: Get 10% OFF your first purchase! Use code: FIRST10
+  </div>
+
+  <div class="container">
+    <header>
+      <div class="brand">Essence</div>
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <nav id="mainNav">
+        <a href="#" onclick="openPage('home')">Home</a>
+        <a href="#" onclick="openPage('products')">Products</a>
+        <a href="#" onclick="openPage('contact')">Contact</a>
+      </nav>
+    </header>
+
+    <!-- HOME -->
+    <main id="home" class="page active">
+      <section class="hero">
+        <!-- Background Slideshow -->
+        <div class="hero-bg">
+          <div class="hero-slide active" style="background-image:url('https://www.scentstore.com/wp-content/uploads/2024/09/Viktor-Rolf-Spicebomb-90ml-Gift-Set-2025-Advert.jpg')"></div>
+          <div class="hero-slide" style="background-image:url('https://www.trulybeauty.com/cdn/shop/files/dsc06890_done_v1web.jpg?v=1736869923')"></div>
+          <div class="hero-slide" style="background-image:url('https://oudattar.co.uk/cdn/shop/products/Oud-Attar1087.jpg?v=1681209373')"></div>
+        </div>
+
+        <div class="hero-left">
+          <h1>Luxury Fragrances. Unforgettable Scents.</h1>
+          <p class="small">Discover curated perfumes crafted to leave a lasting impression. Handpicked ingredients, elegant bottles, and scents that tell a story.</p>
+          <button class="btn" onclick="openPage('products')">View Collection</button>
+
+          <div class="section">
+            <h3>Featured</h3>
+            <div class="grid" id="featuredGrid">
+              <div class="card">
+                <img src="https://oudattar.co.uk/cdn/shop/products/DSC02576-v32.jpg?v=1676986705" alt="Amber & Oud">
+                <div class="product-title">Amber & Oud</div>
+                <div class="price">£49.00</div>
+              </div>
+              <div class="card">
+                <img src="https://www.myfragranceobsession.com/cdn/shop/files/Photoroom_20250221_091337.jpg?v=1740876026&width=1946" alt="Velvet Orchid">
+                <div class="product-title">Velvet Orchid</div>
+                <div class="price">£42.00</div>
+              </div>
+              <div class="card">
+                <img src="https://m.media-amazon.com/images/I/513YkpRDxYL._AC_UF1000,1000_QL80_.jpg" alt="Citrus Bloom">
+                <div class="product-title">Citrus Bloom</div>
+                <div class="price">£32.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <img class="perf-img" src="https://www.dior.com/on/demandware.static/-/Library-Sites-DiorSharedLibrary/default/dw389488b8/images/beauty/0-HOME/FRAGRANCES/2025/08-AUGUST/DIOR-COM_DIGITAL_LCP_ROSE_STAR_2400x3000px.jpg" alt="bottle">
+        </div>
+      </section>
+
+      <!-- Reviews Carousel with Stars -->
+      <div class="carousel">
+        <h3 style="text-align:center;">What Our Customers Say</h3>
+        <div class="carousel-track" id="carouselTrack">
+          <div class="review">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">"Absolutely stunning fragrances! The Noir Amber has become my signature scent. The quality is exceptional and the bottle is gorgeous."</div>
+            <div class="review-author">— Sarah M.</div>
+          </div>
+          <div class="review">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">"I've tried many perfume shops but Essence stands out. The staff are knowledgeable and the selection is curated perfectly. Highly recommend!"</div>
+            <div class="review-author">— James P.</div>
+          </div>
+          <div class="review">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">"The Velvet Orchid is divine! Long-lasting and sophisticated. I get compliments everywhere I go. Worth every penny!"</div>
+            <div class="review-author">— Emma L.</div>
+          </div>
+          <div class="review">
+            <div class="review-stars">★★★★☆</div>
+            <div class="review-text">"Great collection and fast delivery. The packaging was beautiful. Only wish there were more unisex options, but overall very satisfied!"</div>
+            <div class="review-author">— Michael R.</div>
+          </div>
+          <div class="review">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">"Essence helped me find the perfect gift for my wife. The customer service was outstanding and the fragrance is absolutely luxurious!"</div>
+            <div class="review-author">— David K.</div>
+          </div>
+          <div class="review">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">"Cedar & Sage is my new favourite! Fresh, elegant, and unique. Can't find anything like it elsewhere. Will definitely be ordering again!"</div>
+            <div class="review-author">— Olivia T.</div>
+          </div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+
+      <!-- Newsletter Section -->
+      <div class="newsletter">
+        <h3>Join Our Scent Society</h3>
+        <p>Subscribe to receive exclusive offers, new releases, and fragrance tips</p>
+        <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+          <input type="email" placeholder="Enter your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </main>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="page">
+      <div class="section">
+        <div style="display:flex; justify-content:center; align-items:center; margin-bottom:18px; flex-direction:column; gap:12px;">
+          <h2 style="margin:0;">Our Collection</h2>
+          <div class="small" id="productCount">Showing 12 products</div>
+        </div>
+        <div class="filters" style="justify-content:center;">
+          <div class="chip active" onclick="filterProducts('all')">All</div>
+          <div class="chip" onclick="filterProducts('men')">Men</div>
+          <div class="chip" onclick="filterProducts('women')">Women</div>
+          <div class="chip" onclick="filterProducts('unisex')">Unisex</div>
+          <div class="chip" onclick="filterProducts('bestseller')">Best Sellers</div>
+        </div>
+        <div class="grid" id="productGrid">
+          <div class="card" data-category="men bestseller"><img src="https://oudattar.co.uk/cdn/shop/products/DSC02576-v32.jpg?v=1676986705"><div class="product-title">Amber & Oud</div><div class="price">£49.00</div></div>
+          <div class="card" data-category="women bestseller"><img src="https://www.myfragranceobsession.com/cdn/shop/files/Photoroom_20250221_091337.jpg?v=1740876026&width=1946"><div class="product-title">Velvet Orchid</div><div class="price">£42.00</div></div>
+          <div class="card" data-category="unisex"><img src="https://m.media-amazon.com/images/I/513YkpRDxYL._AC_UF1000,1000_QL80_.jpg"><div class="product-title">Citrus Bloom</div><div class="price">£32.00</div></div>
+          <div class="card" data-category="women bestseller"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ676Wt33xQv-tCLULcXAoSMXsIooIe_TLSg&s"><div class="product-title">Rose Velvet</div><div class="price">£39.00</div></div>
+          <div class="card" data-category="unisex"><img src="https://www.gourmandbeauty.com/cdn/shop/files/le-monde-gourmand-shopify-pdp-gallery-hair-and-body-perfume-mist-sel-ocean-stylized-still-life-image-desktop-1540x1824.jpg?v=1755708164&width=1500"><div class="product-title">Sea Salt Mist</div><div class="price">£36.00</div></div>
+          <div class="card" data-category="men bestseller"><img src="https://www.dior.com/on/demandware.static/-/Sites-master_dior/default/dw43c476e5/Y0958160/Y0958160_C099700388_E02_RHC.jpg"><div class="product-title">Noir Amber</div><div class="price">£45.00</div></div>
+          <div class="card" data-category="men"><img src="https://fimgs.net/mdimg/secundar/fit.126333.jpg"><div class="product-title">Leather & Smoke</div><div class="price">£55.00</div></div>
+          <div class="card" data-category="women"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeko6FVbmDXt9uN_QYby-myOQsV37pFahvsw&s"><div class="product-title">Jasmine Dew</div><div class="price">£38.00</div></div>
+          <div class="card" data-category="unisex"><img src="https://i.etsystatic.com/7261201/r/il/99527d/5870689800/il_fullxfull.5870689800_i6h5.jpg"><div class="product-title">Cedar & Sage</div><div class="price">£40.00</div></div>
+          <div class="card" data-category="unisex"><img src="https://cdn.platform.next/common/items/default/default/itemimages/3_4Ratio/product/lge/R81396s.jpg"><div class="product-title">Ocean Breeze</div><div class="price">£34.00</div></div>
+          <div class="card" data-category="men"><img src="https://i.ebayimg.com/images/g/K7UAAOSwglBm3I~t/s-l1200.jpg"><div class="product-title">Midnight Leather</div><div class="price">£50.00</div></div>
+          <div class="card" data-category="women bestseller"><img src="https://www.chandrikathomas.co.uk/cdn/shop/files/Signature_Perfume_Duo.webp?v=1737022473&width=320"><div class="product-title">Signature Duo</div><div class="price">£62.00</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="page">
+      <div class="section">
+        <h2>Contact & Visit</h2>
+        <div class="contact-grid">
+          <div>
+            <form onsubmit="sendMessage(event)">
+              <label class="small">Name</label>
+              <input placeholder="Your name" required>
+              <label class="small">Email or WhatsApp</label>
+              <input placeholder="you@example.com or +44 7..." required>
+              <label class="small">Message</label>
+              <textarea rows="6" placeholder="How can we help?" required></textarea>
+              <button class="btn" type="submit" style="border:2px solid var(--gold); background:transparent; color:var(--gold);">Send Message</button>
+            </form>
+            <div style="margin-top:18px; color:var(--muted)">
+              <div style="margin-bottom:8px"><strong>Opening hours</strong><br> Mon–Sat: 10:00 — 18:00</div>
+              <div style="margin-bottom:8px"><strong>Phone</strong><br> +44 7568983459</div>
+              <div><strong>Follow Us</strong></div>
+              <div class="social-icons" style="margin-top:10px">
+                <a href="https://wa.me/447568983459" target="_blank" class="social-icon whatsapp">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                </a>
+                <a href="https://instagram.com/essence" target="_blank" class="social-icon instagram">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
+                </a>
+                <a href="https://facebook.com/essence" target="_blank" class="social-icon facebook">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="map-container">
+              <iframe
+                width="100%"
+                height="300"
+                style="border:0; border-radius:12px;"
+                loading="lazy"
+                allowfullscreen
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2491.555165561574!2d-1.8944540840227595!3d52.47677897978183!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4870bcbb4c97e76d%3A0x9a3d0c4b9a5d3b6a!2sEdgbaston%20St%2C%20Birmingham%20B5%205BB%2C%20UK!5e0!3m2!1sen!2suk!4v1702391170000"
+              ></iframe>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:8px; align-items:center">
+              <div class="small">Visit us at:</div>
+              <div style="font-weight:700">5BB, Edgbaston St, Birmingham</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px">
+        <div>© <strong>Essence</strong> · Handpicked fragrances</div>
+        <div class="social-icons">
+          <a href="https://wa.me/447568983459" target="_blank" class="social-icon whatsapp" title="WhatsApp">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          </a>
+          <a href="https://instagram.com/essence" target="_blank" class="social-icon instagram" title="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
+          </a>
+          <a href="https://facebook.com/essence" target="_blank" class="social-icon facebook" title="Facebook">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/447568983459" target="_blank" class="wa-float" title="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px;fill:white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  </a>
+
+  <script>
+  // Page navigation
+  function openPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    const el = document.getElementById(id);
+    if(el) el.classList.add('active');
+    window.scrollTo(0,0);
+    closeMenu();
+  }
+
+  // Close mobile menu
+  function closeMenu(){
+    const nav = document.getElementById('mainNav');
+    nav.classList.remove('nav-mobile');
+    const dropdown = document.querySelector('.dropdown');
+    if(dropdown) dropdown.classList.remove('active');
+  }
+
+  // Mobile menu toggle
+  function toggleMenu(){
+    const nav = document.getElementById('mainNav');
+    nav.classList.toggle('nav-mobile');
+  }
+
+  // Mobile dropdown toggle
+  document.addEventListener('DOMContentLoaded', function(){
+    const dropdown = document.querySelector('.dropdown');
+    const dropbtn = document.querySelector('.dropbtn');
+    
+    if(dropbtn){
+      dropbtn.addEventListener('click', function(e){
+        // Only toggle on mobile
+        if(window.innerWidth <= 900){
+          e.stopPropagation();
+          dropdown.classList.toggle('active');
+        }
+      });
+    }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e){
+      const nav = document.getElementById('mainNav');
+      const menuToggle = document.querySelector('.menu-toggle');
+      const dropdown = document.querySelector('.dropdown');
+      
+      if(!nav.contains(e.target) && !menuToggle.contains(e.target)){
+        nav.classList.remove('nav-mobile');
+        if(dropdown) dropdown.classList.remove('active');
+      }
+    });
+  });
+
+  // Product filtering
+  function filterProducts(category){
+    const cards = document.querySelectorAll('#productGrid .card');
+    const chips = document.querySelectorAll('.filters .chip');
+    
+    // Update active chip
+    chips.forEach(chip => chip.classList.remove('active'));
+    document.querySelectorAll('.filters .chip').forEach(chip => {
+      if(chip.textContent.toLowerCase().includes(category) || (category === 'all' && chip.textContent === 'All')){
+        chip.classList.add('active');
+      }
+    });
+    
+    // Filter products
+    cards.forEach(card => {
+      if(category === 'all'){
+        card.style.display = 'block';
+      } else {
+        const categories = card.getAttribute('data-category');
+        card.style.display = categories && categories.includes(category) ? 'block' : 'none';
+      }
+    });
+
+    // Update count
+    const visibleCards = Array.from(cards).filter(c => c.style.display !== 'none').length;
+    document.getElementById('productCount').textContent = `Showing ${visibleCards} products`;
+  }
+
+  // Hero Background Slideshow
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.hero-slide');
+
+  console.log('Found slides:', slides.length);
+  
+  // Preload images
+  slides.forEach((slide, i) => {
+    const bgImage = slide.style.backgroundImage;
+    const url = bgImage.slice(4, -1).replace(/"/g, "");
+    console.log(`Slide ${i} URL:`, url);
+    
+    const img = new Image();
+    img.onload = () => console.log(`Slide ${i} loaded successfully`);
+    img.onerror = () => console.log(`Slide ${i} failed to load`);
+    img.src = url;
+  });
+
+  function nextSlide(){
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+    console.log('Changed to slide:', currentSlide);
+  }
+
+  // Auto-advance hero slideshow every 4 seconds
+  setInterval(nextSlide, 4000);
+
+  // Reviews carousel
+  let currentReview = 0;
+  const reviews = document.querySelectorAll('.review');
+  const track = document.getElementById('carouselTrack');
+  const dotsContainer = document.getElementById('carouselDots');
+
+  // Create dots
+  reviews.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToReview(i);
+    dotsContainer.appendChild(dot);
+  });
+
+  function goToReview(index){
+    currentReview = index;
+    track.style.transform = `translateX(-${currentReview * 100}%)`;
+    
+    // Update dots
+    document.querySelectorAll('.dot').forEach((dot, i) => {
+      dot.classList.toggle('active', i === currentReview);
+    });
+  }
+
+  function nextReview(){
+    currentReview = (currentReview + 1) % reviews.length;
+    goToReview(currentReview);
+  }
+
+  // Auto-advance carousel every 5 seconds
+  setInterval(nextReview, 5000);
+
+  // Newsletter subscription
+  function subscribeNewsletter(e){
+    e.preventDefault();
+    const email = e.target.querySelector('input').value;
+    alert(`Thank you for subscribing! We'll send exclusive offers to ${email}`);
+    e.target.reset();
+  }
+
+  // Contact form submission
+  function sendMessage(e){
+    e.preventDefault();
+    alert('Thank you for your message! We will get back to you soon.');
+    e.target.reset();
+  }
+</script>
+</body>
+</html>
